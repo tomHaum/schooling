@@ -1,5 +1,7 @@
 package checkers;
-
+/**
+ * @author Tom Haumersen
+ */
 import java.awt.Point;
 
 public class Piece {

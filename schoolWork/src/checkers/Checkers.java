@@ -1,5 +1,7 @@
 package checkers;
-
+/**
+ * @author Tom Haumersen
+ */
 import layout.*;
 
 import java.awt.BorderLayout;
