@@ -79,25 +79,106 @@ public class Grapher {
 		inputPanel.add(equation,g);
 		g.gridx = 0;g.gridy = 1;
 		g.gridwidth = 1;
-		inputPanel.add(new JLabel("Input A"),g);
+		inputPanel.add(new JLabel("Root 1"),g);
 		g.gridx = 1;
 		g.weightx = 2;
-		final JTextField textA = new JTextField("examoly a");
+		g.fill = g.HORIZONTAL;
+		final JTextField textA = new JTextField("root1");
 		textA.setSize(100, textA.getHeight());
-		textA.addActionListener(new ActionListener(){
+//		textA.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				
+//			}			
+//		});
+		inputPanel.add(textA,g);
+		
+		g.fill = g.NONE;
+		g.gridx = 0;g.gridy = 2;
+		g.gridwidth = 1;
+		inputPanel.add(new JLabel("Root 2"),g);
+		g.gridx = 1;
+		g.weightx = 2;
+		g.fill = g.HORIZONTAL;
+		final JTextField textB = new JTextField("root2");
+		textB.setSize(100, textB.getHeight());
+//		textB.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				
+//				
+//			}			
+//		});
+		inputPanel.add(textB,g);
+		
+		g.fill = g.NONE;
+		g.gridx = 0;g.gridy = 3;
+		g.gridwidth = 1;
+		inputPanel.add(new JLabel("Root 3"),g);
+		g.gridx = 1;
+		g.weightx = 2;
+		g.fill = g.HORIZONTAL;
+		final JTextField textC = new JTextField("root3");
+		textC.setSize(100, textC.getHeight());
+	
+//		textC.addActionListener(new ActionListener(){
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//			
+//			}
+//			
+//			
+//		});
+		inputPanel.add(textC,g);
+		
+		g.fill = g.NONE;
+		g.weightx = 1;
+
+		g.gridx = 0;g.gridy = 4;
+		JButton quadButton = new JButton("Quad");
+		quadButton.addActionListener(new ActionListener(){
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setCubic(Double.parseDouble(textA.getText()),
-						b,c,d);
-			}			
+				String aText = textA.getText();
+				String bText = textB.getText();
+				
+				double root1 = Double.parseDouble(aText);
+				double root2 = Double.parseDouble(bText);
+				
+				
+				calcQuad(root1,root2);
+			}
+			
 		});
-		inputPanel.add(textA,g);
+		inputPanel.add(quadButton,g);
+		g.gridx = 1;
+		JButton  cubicButton = new JButton("Cubic");
+		cubicButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String aText = textA.getText();
+				String bText = textB.getText();
+				String cText = textC.getText();
+				double root1 = Double.parseDouble(aText);
+				double root2 = Double.parseDouble(bText);
+				double root3 = Double.parseDouble(cText);
+				
+				calcCubic(root1,root2,root3);
+			}
+			
+		});
+		inputPanel.add(cubicButton,g);
+		
+		
 		g.gridy = 5;
 		g.gridx = 0;g.gridwidth = 2;
 		inputPanel.add(manual,g);
 		g.gridx = 2;
 		inputPanel.add(graphButton,g);
-		inputPanel.invalidate()
+		//inputPanel.invalidate()
 		GridLayout gL = new GridLayout(1,2);
 		content.setLayout(gL);
 		
@@ -122,7 +203,7 @@ public class Grapher {
 	}
 	List<Point> getPoints(){
 		List<Point> pts = new ArrayList<Point>();
-		for(double i = -10; i < 11; i = i + .5){
+		for(double i = -20; i < 21; i = i + .5){
 			System.out.println(i);
 			double temp = a*Math.pow(i,3);
 			temp = temp + b*Math.pow(i, 2);
@@ -133,6 +214,34 @@ public class Grapher {
 		}
 		
 		return pts;
+	}
+	public void calcQuad(double one,double two){
+		double a1 = 1.0;
+		double b1 = -1 * (one + two);
+		double c1 = one * two;
+		String part1 = (b1 > 0)? ("+ " + b1 ) : ("- " + Math.abs(b1)) + "x ";
+		if(b1 == 0)part1 = "";
+		String part2 = (c1 > 0)? ("+ " + c1) : ("- " + Math.abs(c1));
+		if(c1 == 0)part2 = "";
+		System.out.println(a1 + "x^2 "+  part1 + part2);
+		setCubic(0,a1,b1,c1);
+		
+	}
+	public void calcCubic(double one, double two, double three){
+		double a1 = 1.0;
+		double b1 = (one + two + three) * -1.0;
+		double c1 = one*two + one*three + two*three;
+		double d1 = -one*two*three;
+		
+		String part1 = (b1 > 0)? ("+ " + b1 ) : ("- " + Math.abs(b1)) + "x^2 ";
+		if(b1 == 0)part1 = "";
+		String part2 = (c1 > 0)? ("+ " + c1) : ("- " + Math.abs(c1)) + "x ";
+		if(c1 == 0)part2 = "";
+		String part3 = (d1 > 0)? ("+ " + d1) : ("- " + Math.abs(d1));
+		if(d1 == 0)part3 = "";
+		
+		System.out.println(a1 + "x^3 "+  part1 + part2 + part3);
+		setCubic(a1,b1,c1,d1);
 	}
 	
 }

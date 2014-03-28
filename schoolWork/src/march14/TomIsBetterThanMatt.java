@@ -1,19 +1,18 @@
 package march14;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import checkers.Piece;
+
 
 public class TomIsBetterThanMatt extends JPanel {
 	List<Rectangle2D> rects = new ArrayList<Rectangle2D>();
@@ -21,89 +20,89 @@ public class TomIsBetterThanMatt extends JPanel {
 	int numOfSides = 3;
 	int numOfRect = 10;
 
-	TomIsBetterThanMatt() {
+	public static void main(String[] args){
+		TomIsBetterThanMatt a = new TomIsBetterThanMatt();
+		JFrame frame = new JFrame("window");//The main frame for the gui
+		Scanner in = new Scanner(System.in);//gets user input
 
-	}
-
-	public void init() {
-		double x1 = -1;
-		double y1 = 0;
-		double x2 = -1;
-		double y2 = 0;
-		double area = 0;
-
-		int inteveral = 25;
-		Rectangle2D a;
-
-		double width = (double) (2.0 / inteveral);
-		for (int i = 0; i < inteveral; i++) {
-			System.out.println();
-			x1 = x2;
-			System.out.println("x1 = " + x1);
-			x2 += width;
-			System.out.println("x2 = " + x2);
-
-			y1 = (double) Math.pow(Math.abs(1 - (x1 * x1)), .5);
-			System.out.println("y1 = " + y1);
-			y2 = (double) Math.pow(Math.abs(1 - (x2 * x2)), .5);
-			System.out.println("y2 = " + y2);
-			if (y1 > y2) {
-				area += y2 * width;
-				a = new Rectangle2D.Double(x1 * 100, 0, width * 100, y2 * 100);
-				System.out.println(y2);
-			} else {
-				area += y1 * width;
-				a = new Rectangle2D.Double(x1 * 100, 0, width * 100, y1 * 100);
-				System.out.println(y1);
+		frame.getContentPane().add(a);//adds this instance ofTomIsBetter to the frame
+		frame.pack();//compacts the gui
+		frame.setSize(500, 500);//overrides the packing to default of 500,500
+		frame.setVisible(true);//makes it visible
+		
+		while (true) {//indefinete loop... for ever
+			System.out.println("How do you want to calculate? (R)ectangles or (P)olygons?");
+			String input = in.next();
+			if (input != null) {//if the user input something
+				char flag = input.toLowerCase().charAt(0);
+				switch (flag) {
+				case 'r'://user wants inscribed rectangles
+					a.rect = true;
+					a.poly = false;
+					a.rects.clear();
+					System.out.println("How many rectangles do you want to use?");
+					int rects = in.nextInt();//gets how many rectangles
+					if (rects > 0) {
+						a.numOfRect = rects;//sets the gui to know how many rects
+					}
+					a.repaint();//forces repaint
+					break;
+				case 'p'://user wants polygons
+					a.rect = false;
+					a.poly = true;
+					
+					System.out.println("How many sides do you want to use?");
+					int sides = in.nextInt();//gets the number of sides per polygon
+					if (sides > 0) {
+						a.numOfSides = sides;//-passes it to the gui
+					}
+					a.repaint();
+					break;
+				}
 			}
-			System.out.println("Area: " + area);
-			rects.add(a);
-
 		}
-		this.repaint();
+		
 	}
 
-	public void paint1(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.translate(150, 100);
-
-		Iterator<Rectangle2D> it = rects.iterator();
-
-		while (it.hasNext()) {
-			Rectangle2D a = it.next();
-			;
-			g2.draw(a);
-		}
-	}
 
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		g.clearRect(-0, 0, 1000, 1000);
+		g.clearRect(-0, 0, 1000, 1000);//clears all previous drawings
 		System.out.println(poly + " " + rect);
 		if (poly) {
-			g2.translate(200, 200);
-			g2.drawOval(-100, -100, 200, 200);
+			//circumscribed
+			g2.translate(200, 200);//shifts 0,0 to a more central area of the frame
+			g2.drawOval(-100, -100, 200, 200);//draws the base circle
 
-			int sides = numOfSides;
+			int sides = numOfSides;//from the user input
 
-			double sideLengthCirc = Math.tan(Math.PI / sides);
-			double areaCirc = sideLengthCirc * 1 * sides;
-			g2.drawLine((int) (-sideLengthCirc * 100), 100,
-					(int) (sideLengthCirc * 100), 100);
+			double sideLengthCirc = Math.tan(Math.PI / sides);//gets half the side length
+			double areaCirc = sideLengthCirc * 1 * sides;//.5 b h * number of triangles
+			//the half the base is half the side length, the height is always the radius
+			
+			//This draws the first side length, always 1 radius away
+			g2.drawLine((int) (-sideLengthCirc * 100), 100, (int) (sideLengthCirc * 100), 100);
+			
+			
 			for (int i = 0; i < sides - 1; i++) {
-
+				//rotates the canvas around the center of the circle
 				g2.rotate(2 * Math.PI / sides, 0, 0);
+				//the line is drawn at the same spot, no need to move cuz rotate covers that
 				g2.drawLine((int) (-sideLengthCirc * 100), 100,
 						(int) (sideLengthCirc * 100), 100);
 			}
-
-			double sideLengthInc = Math.sin(Math.PI / sides);
-			double height = Math.cos(Math.PI / sides);
-			double areaInc = sideLengthInc * height * sides;
-			double area = (areaInc + areaCirc) * .5;
+			//inscribed circle
+			double sideLengthInc = Math.sin(Math.PI / sides);//same as last time but this time sin works
+			double height = Math.cos(Math.PI / sides);//the distance is no longer constant, it is depended on number of sides
+			double areaInc = sideLengthInc * height * sides;//same formula for area, but dependent on height
+			double area = (areaInc + areaCirc) * .5;//average area
 			System.out.println(area);
+			
+			//same thing as circumscribed but with the variable height
 			g2.drawLine((int) (-sideLengthInc * 100), (int) (height * 100),
 					(int) (sideLengthInc * 100), (int) (100 * height));
+			
+			//same cool for loop
 			for (int i = 0; i < sides - 1; i++) {
 				g2.rotate(2 * Math.PI / sides, 0, 0);
 				g2.drawLine((int) (-sideLengthInc * 100), (int) (height * 100),
@@ -112,6 +111,7 @@ public class TomIsBetterThanMatt extends JPanel {
 		}
 		if (rect) {
 			g2.translate(150, 100);
+
 			double x1 = -1;
 			double y1 = 0;
 			double x2 = -1;
@@ -123,40 +123,43 @@ public class TomIsBetterThanMatt extends JPanel {
 
 			double width = (double) (2.0 / inteveral);
 			for (int i = 0; i < inteveral; i++) {
-				//System.out.println();
+				//makes the first x equal to the last x
 				x1 = x2;
-				// System.out.println("x1 = " + x1);
+				//forms a new last x dependent on how wide the rectangles are
 				x2 += width;
-					// System.out.println("x2 = " + x2);
 				
+				//calcs using circle formula
 				y1 = (double) Math.pow(Math.abs(1 - (x1 * x1)), .5);
-				// System.out.println("y1 = " + y1);
+				
 				y2 = (double) Math.pow(Math.abs(1 - (x2 * x2)), .5);
-				// System.out.println("y2 = " + y2);
+				//if y1 is outside the circle
 				if (y1 > y2) {
-					area += y2 * width;
-					a1 = new Rectangle2D.Double(x1 * 100, 0, width * 100,
+					//uses y2
+					area += y2 * width;//adds area of rect to cumulitive area
+					
+					//makes a Rectangle object that represents the rectagle(for drawing purposes)
+					a1 = new Rectangle2D.Double(x1 * 100, 100 - (y2 * 100), width * 100,
 							y2 * 100);
-					// System.out.println(y2);
-				} else {
+
+				} else {//y2 is outside the circle\
+					//use y1
 					area += y1 * width;
-					a1 = new Rectangle2D.Double(x1 * 100, 0, width * 100,
+					a1 = new Rectangle2D.Double(x1 * 100, 100 - (y1 * 100), width * 100,
 							y1 * 100);
-					// System.out.println(y1);
 				}
-				// System.out.println("Area: " + area);
+
 				rects.add(a1);
 
 			}
-			// this.repaint();
+			//variable to iterate over every rectangle
 			Iterator<Rectangle2D> it = rects.iterator();
 
 			while (it.hasNext()) {
 				Rectangle2D a2 = it.next();
-				;
-				g2.draw(a2);
+				
+				g2.draw(a2);//draws it to screen
 			}
-			area *= 2;
+			area *= 2;//some weird thing that works
 			System.out.println("Final estimate: " + area);
 		}
 	}

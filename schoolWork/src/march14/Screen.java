@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 
 public class Screen extends JPanel {
 	List<Point> points = new ArrayList<Point>();
-	double scaleX = 1;
-	double scaleY = 1;
+	double scaleX = 10;
+	double scaleY = 10;
 
 	public void paint(Graphics g1){
 		int w = this.getWidth();
