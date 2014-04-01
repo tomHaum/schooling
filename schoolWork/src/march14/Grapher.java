@@ -31,7 +31,16 @@ public class Grapher {
 		Grapher grapher = new Grapher();
 		grapher.initialize();
 	}
-
+	public double stringToDouble(String s){
+		double dubs = 0.0;
+		String[] parts = s.split("+");
+		for(int i = 0; i < parts.length; i++){
+			System.out.println(parts[i]);
+		}
+		System.out.println();
+		
+		return d;
+	}
 	public void initialize() {
 
 		JPanel content = new JPanel();
@@ -96,7 +105,7 @@ public class Grapher {
 		g.gridx = 1;
 		g.weightx = 2;
 		g.fill = g.HORIZONTAL;
-		final JTextField textA = new JTextField("root1");
+		final JTextField textA = new JTextField("A + (B ) ^ (C/D)");
 		textA.setSize(100, textA.getHeight());
 		inputPanel.add(textA, g);
 		
@@ -109,7 +118,7 @@ public class Grapher {
 		g.gridx = 1;
 		g.weightx = 2;
 		g.fill = g.HORIZONTAL;
-		final JTextField textB = new JTextField("root2");
+		final JTextField textB = new JTextField("A + (B ) ^ (C/D)");
 		textB.setSize(100, textB.getHeight());
 		inputPanel.add(textB, g);
 
@@ -121,7 +130,7 @@ public class Grapher {
 		g.gridx = 1;
 		g.weightx = 2;
 		g.fill = g.HORIZONTAL;
-		final JTextField textC = new JTextField("root3");
+		final JTextField textC = new JTextField("A + (B ) ^ (C/D)");
 		textC.setSize(100, textC.getHeight());
 		inputPanel.add(textC, g);
 
@@ -136,6 +145,8 @@ public class Grapher {
 			public void actionPerformed(ActionEvent e) {
 				String aText = textA.getText();
 				String bText = textB.getText();
+				stringToDouble(aText);
+				stringToDouble(bText);
 				double root1 = Double.parseDouble(aText);
 				double root2 = Double.parseDouble(bText);
 				calcQuad(root1, root2);
@@ -186,7 +197,6 @@ public class Grapher {
 				displayPanel.setPoints(getPoints());
 				scaleXLabel.setText(String.format("%.4f",scaleX));
 			}
-
 		});
 		scaleXSlider.setMajorTickSpacing(10);
 		scaleXSlider.setMinorTickSpacing(5);
