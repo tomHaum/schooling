@@ -183,6 +183,7 @@ public class Grapher {
 						((JSlider) e.getSource()).getValue() / 10.0);
 				displayPanel.scaleX = scaleX;
 				displayPanel.repaint();
+				displayPanel.setPoints(getPoints());
 				scaleXLabel.setText(String.format("%.4f",scaleX));
 			}
 
@@ -209,6 +210,7 @@ public class Grapher {
 				double scaleY = Math.pow(10,
 						((JSlider) e.getSource()).getValue() / 10.0);
 				displayPanel.scaleY = scaleY;
+				System.out.println(((JSlider)e.getSource()).getValue());
 				displayPanel.repaint();
 				scaleYLabel.setText(String.format("%.4f",scaleY));
 			}

@@ -30,7 +30,6 @@ public class Screen extends JPanel {
 		g.drawLine(-200, 0, 200, 0);
 		g.drawLine(0, -200, 0, 200);
 		if (points.size() > 0)
-			;
 		{
 			Point last = points.get(0);
 			for (int i = 1; i < points.size(); i++) {
@@ -51,6 +50,9 @@ public class Screen extends JPanel {
 		points.clear();
 		for (int i = 0; i < pt.size(); i++) {
 			points.add(pt.get(i));
+			if(i == 0){
+				System.out.println(points.get(0));
+			}
 		}
 		System.out.println("repainting");
 		repaint();

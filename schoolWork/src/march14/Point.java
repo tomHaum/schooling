@@ -15,4 +15,7 @@ public class Point {
 	public double getY(){
 		return this.y;
 	}
+	public String toString(){
+		return x + " " + y;
+	}
 }
