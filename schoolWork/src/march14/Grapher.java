@@ -33,9 +33,20 @@ public class Grapher {
 	}
 	public double stringToDouble(String s){
 		double dubs = 0.0;
-		String[] parts = s.split("+");
-		for(int i = 0; i < parts.length; i++){
-			System.out.println(parts[i]);
+		s = s.trim();
+		String[] sub = {};
+		if(s.contains("+")){
+			sub = s.split("\\+");
+		}else if(s.contains("-")){
+			if(s.indexOf("-") != 0){
+				sub = s.split("-");
+			}else{
+				s = s.s
+			}
+			
+		}
+		for(int i = 0; i < sub.length;i++){
+			System.out.println(sub[i]);
 		}
 		System.out.println();
 		
@@ -147,7 +158,7 @@ public class Grapher {
 				String bText = textB.getText();
 				stringToDouble(aText);
 				stringToDouble(bText);
-				double root1 = Double.parseDouble(aText);
+				double root1 = stringToDouble(aText);
 				double root2 = Double.parseDouble(bText);
 				calcQuad(root1, root2);
 			}
