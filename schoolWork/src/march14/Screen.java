@@ -51,15 +51,15 @@ public class Screen extends JPanel {
 		for (int i = 0; i < pt.size(); i++) {
 			points.add(pt.get(i));
 			if(i == 0){
-				System.out.println(points.get(0));
+				//System.out.println(points.get(0));
 			}
 		}
-		System.out.println("repainting");
+		//System.out.println("repainting");
 		repaint();
 	}
 
 	public double[] getPointArgs() {
-		System.out.println("width"  + width);
+		//System.out.println("width"  + width);
 		double start = -1.0 * width / scaleX / 2.0;
 		double end = start * -1.0;
 		double interval = end * 2.0 / (width/pointsPerPixel);
