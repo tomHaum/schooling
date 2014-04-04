@@ -1,5 +1,8 @@
 package march14;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -18,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class Grapher {
+public class TomStillBetter {
 	public double a;
 	public double b;
 	public double c;
@@ -28,7 +31,7 @@ public class Grapher {
 	public JLabel equation = new JLabel("null");
 
 	public static void main(String[] args) {
-		Grapher grapher = new Grapher();
+		TomStillBetter grapher = new TomStillBetter();
 		grapher.initialize();
 	}
 
@@ -408,7 +411,6 @@ public class Grapher {
 		g.gridx = 3;
 		inputPanel.add(scaleYLabel, g);
 
-		// inputPanel.invalidate()
 		GridLayout gL = new GridLayout(1, 2);
 		content.setLayout(gL);
 		content.add(inputPanel);
@@ -417,7 +419,7 @@ public class Grapher {
 		frame.setContentPane(content);
 		frame.setVisible(true);
 		frame.setSize(800, 400);
-		// frame.setResizable(false);
+	
 
 		List<Point> points = new ArrayList<Point>();
 		points.add(new Point(10, 10));
@@ -442,7 +444,8 @@ public class Grapher {
 	List<Point> getPoints() {
 		List<Point> pts = new ArrayList<Point>();
 		double[] param = displayPanel.getPointArgs();
-		//System.out.println(param[0] + ", " + param[1] + ", " + param[2]);
+		
+		//calcs each point
 		for (double i = param[0]; i < param[1]; i = i + param[2]) {
 			
 			double temp = a * Math.pow(i, 3);
@@ -458,9 +461,12 @@ public class Grapher {
 	}
 
 	public void calcQuad(double one, double two) {
+		//maths
 		double a1 = 1.0;
 		double b1 = -1 * (one + two);
 		double c1 = one * two;
+		
+		//makes the strings look nice
 		String part1 = (b1 > 0) ? ("+ " + b1) : ("- " + Math.abs(b1)) + "x ";
 		if (b1 == 0)
 			part1 = "";
@@ -473,11 +479,12 @@ public class Grapher {
 	}
 
 	public void calcCubic(double one, double two, double three) {
+		//maths
 		double a1 = 1.0;
 		double b1 = (one + two + three) * -1.0;
 		double c1 = one * two + one * three + two * three;
 		double d1 = -one * two * three;
-
+		//makes it looks nice
 		String part1 = (b1 > 0) ? ("+ " + b1) : ("- " + Math.abs(b1)) + "x^2 ";
 		if (b1 == 0)
 			part1 = "";
@@ -491,5 +498,87 @@ public class Grapher {
 		System.out.println(a1 + "x^3 " + part1 + part2 + part3);
 		setCubic(a1, b1, c1, d1);
 	}
+	
+	private class Screen extends JPanel {
+		List<Point> points = new ArrayList<Point>();
+		double scaleX = 10;
+		double scaleY = 10;
+		int width;
+		int height;
+		double pointsPerPixel = 1.0;
 
+		public void paint(Graphics g1) {
+			int w = this.getWidth();
+			width = w;
+			int h = this.getHeight();
+			height = h;
+
+			Graphics2D g = (Graphics2D) g1;
+			//centers the orgin to the center
+			g.translate(w / 2, h / 2);
+			g.setPaint(Color.WHITE);
+			//clears the screen of previous graph
+			g.fill3DRect(-w / 2, -h / 2, w, h, true);
+			g.setPaint(Color.BLACK);
+			g.drawLine(-200, 0, 200, 0);
+			g.drawLine(0, -200, 0, 200);
+			if (points.size() > 0)//if there are points
+			{
+				Point last = points.get(0);
+				for (int i = 1; i < points.size(); i++) {
+					Point temp = points.get(i);
+					//draws a line from the last point to the next point
+					g.drawLine((int) (last.getX() * scaleX),
+							-(int) (last.getY() * scaleY),
+							(int) (temp.getX() * scaleX),
+							-(int) (temp.getY() * scaleY));
+					last = temp;
+				}
+			}
+		}
+
+		public void setPoints(List<Point> pt) {
+			points.clear();
+			for (int i = 0; i < pt.size(); i++) {
+				points.add(pt.get(i));
+				if(i == 0){
+					//System.out.println(points.get(0));
+				}
+			}
+			//System.out.println("repainting");
+			repaint();
+		}
+
+		public double[] getPointArgs() {			
+			//makes sure that the start point is at the edge of the screen
+			double start = -1.0 * width / scaleX / 2.0;
+			//the other end of the screen
+			double end = start * -1.0;
+			//how wide each pixel is in the Screen world
+			double interval = end * 2.0 / (width/pointsPerPixel);
+			double[] answer = { start, end, interval };
+			return answer;
+		}
+
+	}
+	private class Point {
+		double x = 0;
+		double y = 0;
+		//constructor in the for(x,y)
+		public Point(double x , double y){
+			this.x = x; this.y = y;
+		}
+		//returns the x component of the point
+		public double getX(){
+			return this.x;
+		}
+		//returns the y comp
+		public double getY(){
+			return this.y;
+		}
+		//gets a string representation of the point
+		public String toString(){
+			return x + " " + y;
+		}
+	}
 }
