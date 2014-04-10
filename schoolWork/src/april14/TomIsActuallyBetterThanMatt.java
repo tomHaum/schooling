@@ -2,8 +2,12 @@ package april14;
 
 import java.math.BigInteger;
 import java.util.Scanner;
-
-public class FactorialStuff {
+/**
+ * 
+ * @author Tom "Better Than Matt" Haumersen
+ *
+ */
+public class TomIsActuallyBetterThanMatt {
 	public static void main(String[] args){
 		Scanner tom = new Scanner(System.in);
 		char flag = 'y';
@@ -12,7 +16,7 @@ public class FactorialStuff {
 			System.out.println("Show (P)ascal, Binomial Expainsion:(R)eal or (I)maginary, (Q)uit");
 			String inputstuff = tom.next();
 			if(!(inputstuff.length() > 0))
-				continue;
+				continue;//makes sure you typed something in
 			
 			flag = inputstuff.charAt(0);
 			switch(flag){
@@ -60,19 +64,26 @@ public class FactorialStuff {
 		BigInteger real = BigInteger.valueOf(0);
 		BigInteger imaginary = BigInteger.valueOf(0);
 		for(int i = 0; i < answer.length; i++){
+			//answer[i] = (row[i] * (a^(c-i)))*(b^i)
 			answer[i] = row[i].multiply(a.pow(c-i)).multiply(b.pow(i));
+			
 			//a % 4 ==0
-			if(answer[i].mod(BigInteger.valueOf(4)).compareTo(BigInteger.ZERO) == 0){
+			int remainder = (c-i) % 4;
+			//gets the remainder after dividing the power of the current term by 4
+			                
+			if(remainder == 0){// i ^ 4
 				real = real.add(answer[i]);
-			}else if(answer[i].mod(BigInteger.valueOf(3)).compareTo(BigInteger.ZERO) == 0){
+			}else if(remainder == 1){// i ^ 3
 				imaginary = imaginary.add(answer[i].negate());
-			}else if(answer[i].mod(BigInteger.valueOf(2)).compareTo(BigInteger.ZERO) == 0){
+			}else if(remainder == 2){// i ^ 2
 				real = real.add(answer[i].negate());
-			}else{
+			}else{// i^ 1
 				imaginary = imaginary.add(answer[i]);
 			}
 		}
 		System.out.print(real);
+		
+		
 		if(imaginary.compareTo(BigInteger.ZERO) == -1){
 			System.out.print("-");
 			imaginary = imaginary.negate();
@@ -86,12 +97,12 @@ public class FactorialStuff {
 		BigInteger a = BigInteger.valueOf(one);
 		BigInteger b = BigInteger.valueOf(two);
 		int c = three;
+		//gets the current row of the pascal triangle into a array
 		BigInteger[] row = pascalRow(c);
-//		for(BigInteger x: row){
-//			System.out.println(x);
-//		}
+
 		BigInteger[] answer = new BigInteger[row.length];
 		for(int i = 0; i < answer.length; i++){
+			// row[i] * (a^(c-i)) * b^i
 			answer[i] = row[i].multiply(a.pow(c-i)).multiply(b.pow(i));
 			if(c- i > 1){
 				System.out.print(answer[i] + "x^" + (c-i) + " + ");
@@ -103,13 +114,17 @@ public class FactorialStuff {
 		}
 		
 	}
+	//gets one row of the pascal triangle
 	static BigInteger[] pascalRow(int rowNumber){
 		BigInteger[] theRow = new BigInteger[rowNumber + 1];
+		
 		for(int i = 0; i < rowNumber + 1; i++){
 			theRow[i] = combination(rowNumber,i);
 		}
+		
 		return theRow;
 	}
+	//prints out a pascal triangle of any length. NO UPPER LIMIT. just looks funny
 	static void pascal(int rows){
 		//goes to the last row and finds the largest number
 		//for(int i = 0; i < )
@@ -127,6 +142,7 @@ public class FactorialStuff {
 		}
 	}
 	static BigInteger factorial(BigInteger i){
+//		old recursive method
 //		if(i <= 1){
 //			return 1; 
 //		}else{
@@ -139,60 +155,16 @@ public class FactorialStuff {
 		}
 		return total;
 	}
+	
+	//Uses the factorial method to get combination of big numbers
 	static BigInteger combination(int a, int b){
+		
 		BigInteger n = BigInteger.valueOf(a);
+		
 		BigInteger k = BigInteger.valueOf(b);
 		BigInteger num = factorial(n);
+		//	k!(n-k)!
 		BigInteger denom = factorial(k).multiply(factorial(n.subtract(k)));
 		return(num.divide(denom));
-	}
-	private static class Term{
-		public int coeff = 1;
-		public int pow = 1;
-		
-		public Term(){
-			this(1,1);
-		}
-		public Term(int coeff){
-			this(coeff,1);
-		}
-		public Term(int coeff, int pow){
-			this.coeff = coeff;
-			this.pow = pow;
-		}
-		public Term(Term t){
-			this(t.getCoeff(), t.getPow());
-		}
-		public int getCoeff(){
-			return this.coeff;
-		}
-		public void setCoeff(int coeff){
-			this.coeff = coeff;
-		}
-		public int getPow(){
-			return this.pow;
-		}
-		public void setPow(int pow){
-			this.pow = pow;
-		}
-		public Term multiply(Term t){
-			this.setCoeff(t.getCoeff() * this.getCoeff());
-			this.setPow(t.getPow() + this.getPow());
-			return this;
-		}
-		public boolean canAdd(Term t){
-			return this.getPow() == t.getPow();
-		}
-		
-		public Term add(Term t){
-			if(this.canAdd(t)){
-				this.setCoeff(this.getCoeff() + t.getCoeff());
-			}
-			return this;
-		}
-		public Term raiseToThe(int pow){
-			this.setCoeff((int)Math.pow(this.getCoeff(), pow));
-			return this;
-		}
 	}
 }
