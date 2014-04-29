@@ -29,6 +29,7 @@ public class QuizGame implements ActionListener{
 	JButton checkButton;
 	JButton retryButton;
 	
+	JLabel scoreLabel;
 	JScrollPane qScroller;
 	QuestionPanel qPanel;
 	
@@ -45,7 +46,7 @@ public class QuizGame implements ActionListener{
 		
 		fc = new JFileChooser();
 		
-		getQuestions(new File("C:\\testDir\\Quiz1.txt"));
+		getQuestions(new File("P:\\Quiz1.txt"));
 		
 		qPanel = new QuestionPanel(questions);
 //		qPanel.setBackground(Color.RED);
@@ -59,26 +60,34 @@ public class QuizGame implements ActionListener{
 		g.gridx = 0; g.gridy = 0;
 		g.ipadx = 5; g.ipady = 5;
 		g.insets = new Insets(10,10,10,10);
+		g.anchor = GridBagConstraints.NORTH;
+		scoreLabel = new JLabel("Score: 0/0");
+		g.gridwidth = 2;
+		menu.add(scoreLabel);
 		
-		
+		g.anchor = GridBagConstraints.EAST;
+		g.gridwidth = 1;
+		g.gridy++;
 		
 		checkButton = new JButton("Check");
 		checkButton.addActionListener(this);
 		menu.add(checkButton,g);
-	
+		
+		g.anchor = GridBagConstraints.WEST;
 		g.gridx++;
 		retryButton = new JButton("Retry");
 		retryButton.addActionListener(this);
 		menu.add(retryButton, g);
 		
+		g.anchor = GridBagConstraints.EAST;
 		getFileButton = new JButton("Load File");
 		getFileButton.addActionListener(this);
 		g.gridx = 0;g.gridy++;
 		menu.add(getFileButton,g);
 		
+		g.anchor = GridBagConstraints.WEST;
 		g.gridx++;
 		menu.add(new JButton("create quiz"),g);
-		
 		
 		frame.add(qScroller);
 		frame.add(menu);
@@ -115,6 +124,11 @@ public class QuizGame implements ActionListener{
 				System.out.println(file.toString());
 				getQuestions(file);
 				qPanel.setQuestions(questions);
+
+				int height = frame.getHeight();
+				frame.pack();
+				frame.setSize(frame.getWidth(), height);
+				
 			}
 		}else if(e.getSource() == checkButton){
 			qPanel.checkAnswers();
@@ -212,6 +226,9 @@ public class QuizGame implements ActionListener{
 				}
 			}
 			return correct;
+		}
+		public int numOfQuestions(){
+			return this.questions.size();
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
