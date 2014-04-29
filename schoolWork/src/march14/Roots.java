@@ -11,7 +11,7 @@ public class Roots {
 		double r = Math.sqrt((a*a) + (b*b));
 		
 		for(int i = 0; i < n; i++){
-			double one = Math.cos(a)
+			double one = Math.cos(a);
 		}
 		System.out.println("quadds");
 		quadRADic();
