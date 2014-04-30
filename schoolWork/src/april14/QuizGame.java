@@ -20,7 +20,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
+/**
+ * This is a quiz game. It has a gui. It is able to load files from your computer
+ * In the future, i will add support for making your own quizzes from within the GUI.
+ * As of right now you have to make it in notepad, or similar .txt editors
+ * 
+ * the format for the files is 
+ * Question? answer
+ * the question mark is key. Without one, or with more than one, 
+ * the file will load incorrectly
+ * @author 14_thaumersen
+ *
+ */
 public class QuizGame implements ActionListener{
 	JFrame frame;
 
@@ -45,11 +56,13 @@ public class QuizGame implements ActionListener{
 		frame.setSize(500,500);
 		
 		fc = new JFileChooser();
-		
+		//defaults to a premade file that is in your pDrive
+		//loads it to the program memory
 		getQuestions(new File("P:\\Quiz1.txt"));
 		
 		qPanel = new QuestionPanel(questions);
 //		qPanel.setBackground(Color.RED);
+		//adds the scrol
 		qScroller = new JScrollPane(qPanel);
 		qScroller.setBackground(Color.YELLOW);
 		frame.setLayout(new GridLayout(0,1));
@@ -57,7 +70,7 @@ public class QuizGame implements ActionListener{
 		menu = new JPanel();
 		menu.setLayout(new GridBagLayout());
 		GridBagConstraints g = new GridBagConstraints();
-		g.gridx = 0; g.gridy = 0;
+		g.gridx = 1; g.gridy = 0;
 		g.ipadx = 5; g.ipady = 5;
 		g.insets = new Insets(10,10,10,10);
 		g.anchor = GridBagConstraints.NORTH;
@@ -67,6 +80,7 @@ public class QuizGame implements ActionListener{
 		
 		g.anchor = GridBagConstraints.EAST;
 		g.gridwidth = 1;
+		g.gridx = 0;
 		g.gridy++;
 		
 		checkButton = new JButton("Check");
@@ -131,7 +145,23 @@ public class QuizGame implements ActionListener{
 				
 			}
 		}else if(e.getSource() == checkButton){
-			qPanel.checkAnswers();
+			int score = qPanel.checkAnswers();
+			int total = qPanel.numOfQuestions();
+			double percent = (0.0 + score) /(0.0 + total);
+			
+			String level = "";
+			if(percent >= .9){
+				level = "MASTER";
+			}else if (percent >= .7){
+				level = "Wizard";
+			}else if(percent >= .5){
+				level = "Mediocare";
+			}else if(percent >= .3){
+				level = "Terrible";
+			}else{
+				level = "Dispicable";
+			}
+			scoreLabel.setText("Score: "+score + "/" + total + ". Your Level: " + level);
 		}else if(e.getSource() == retryButton){
 			System.out.println("reset");
 			qPanel.reset();
