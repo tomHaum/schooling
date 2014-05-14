@@ -32,6 +32,19 @@ import javax.swing.JTextField;
  * @author 14_thaumersen
  *
  */
+/* example text quiz contents
+What is the halving frequency(in blocks)? 210000
+What is the highest historic USD value? 1200
+What is the goal block creation time(min)? 10
+Who has the most bitcoins? satoshi
+Who has the largest wallet? FBI
+Currently, what is the reward for finding a block(BTC)? 25
+What algrorithm is used to hash the blockchain? SHA256
+Who controls bitcoin network? nobody
+What is the main meme inspired bitcoin spin-off? DogeCoin
+What is the ceiling for number of bitcoins in circulation(number)? 21000000
+ * 
+ */
 public class QuizGame implements ActionListener{
 	JFrame frame;
 
@@ -67,6 +80,9 @@ public class QuizGame implements ActionListener{
 		qScroller.setBackground(Color.YELLOW);
 		frame.setLayout(new GridLayout(0,1));
 		
+		//from her to the end of the method
+		//it is mostly contruction of the GUI
+		//not direly important
 		menu = new JPanel();
 		menu.setLayout(new GridBagLayout());
 		GridBagConstraints g = new GridBagConstraints();
@@ -110,29 +126,34 @@ public class QuizGame implements ActionListener{
 		
 
 	}
+	//returns the set of questions within a file location
 	public void getQuestions(File file) {
 		BufferedReader in;
-		if(file.exists()){
+		if(file.exists()){//makes sure that the file is real
 			try{
 			    in = new BufferedReader(new FileReader(file));
 			    String currentLine = "";
-			    while((currentLine = in.readLine()) != null){
+			    while((currentLine = in.readLine()) != null){//while there is still lines to read
 			    	questions.add(new Question(currentLine));
 			    }
 			   
 			   
 			  
-			    frame.validate();
+			    frame.validate();//updates the frame to hold all the questions
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 	}
+	
+	/**
+	 * the action listener for all the commopents on the GUI
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == getFileButton){
-			int result = fc.showOpenDialog(getFileButton);
+		if(e.getSource() == getFileButton){//if the source of the click is the same as the getFileButton
+			int result = fc.showOpenDialog(getFileButton);//a seperate class that handles file selections
 			if(result == JFileChooser.APPROVE_OPTION){
 				File file = fc.getSelectedFile();
 				System.out.println(file.toString());
@@ -147,9 +168,11 @@ public class QuizGame implements ActionListener{
 		}else if(e.getSource() == checkButton){
 			int score = qPanel.checkAnswers();
 			int total = qPanel.numOfQuestions();
+			//makes sure that the percent is stored in a decimal, not a whole number
 			double percent = (0.0 + score) /(0.0 + total);
 			
 			String level = "";
+			//assigns the name to the score
 			if(percent >= .9){
 				level = "MASTER";
 			}else if (percent >= .7){
@@ -167,20 +190,33 @@ public class QuizGame implements ActionListener{
 			qPanel.reset();
 		}
 	}
+	/**
+	 * inner class that holds two strings
+	 * the question and answer, so one question in a quiz 
+	 * 
+	 *
+	 */
 	private static class Question{
 		String question;
 		String answer;
-//		Question(String q, String a){
-//			this.question = q;
-//			this.answer = a;
-//		}
+		/**
+		 * parses data from the text file. Is reliant on the user creating a document
+		 * that has a question followed by a single question mark then the answer to that question
+		 * 
+		 */
 		Question(String data){
+			//breaks down the string by the question mark
 			String[] qAndA = data.split("\\?");
 			this.question = (qAndA[0] + "?".trim());
 			//System.out.println(question);
 			this.answer = qAndA[1].trim();
 			//System.out.println(answer);
 		}
+		/**
+		 * Small method to check if the user's guess matfch3es the answer 
+		 * @param String guess
+		 * @return boolean if the guess matches the answer
+		 */
 		boolean checkAnswer(String guess){
 			return guess.toLowerCase().equals(answer.toLowerCase());
 		}
@@ -192,9 +228,20 @@ public class QuizGame implements ActionListener{
 		}
 	
 	}
+	/**
+	 * an extension of jPanel that has a JLable for each question 
+	 * and a JText field for the answer so the user can answer it there.
+	 * 
+	 * @author 14_thaumersen
+	 *
+	 */
 	private class QuestionPanel extends JPanel implements ActionListener{
+		//the list of questions that can be changed on a whim
+		//could have worked as an array
 		List<Question> questions;
+		//the labels for the questions
 		JLabel[] questionLabels;
+		//answer fields
 		AnswerField[] guessField;
 		
 		
@@ -206,7 +253,9 @@ public class QuizGame implements ActionListener{
 			setQuestions(this.questions);
 			validate();
 		}
+		//resets the questions to a new question set
 		void setQuestions(List<Question> q){
+			//removes all previous question and answers
 			removeAll();
 			this.questions = q;
 			int size = this.questions.size();
@@ -271,6 +320,14 @@ public class QuizGame implements ActionListener{
 		}
 		
 	}
+	/**
+	 * another inner class for the text field.
+	 * It holds the answer within its own class 
+	 * so that it can easily be checked by classes calling on it
+	 * 
+	 * all methods are self explanitory
+	 *
+	 */
 	private class AnswerField extends JTextField{
 		private String answer;
 		
@@ -281,8 +338,8 @@ public class QuizGame implements ActionListener{
 			return answer;
 		}
 		public boolean checkAnswer(){
-			System.out.println("Guess:" + this.getText().toLowerCase());
-			System.out.println("Answer:" + answer.toLowerCase());
+//			System.out.println("Guess:" + this.getText().toLowerCase());
+//			System.out.println("Answer:" + answer.toLowerCase());
 			return answer.toLowerCase().equals(this.getText().trim().toLowerCase());
 		}
 	}

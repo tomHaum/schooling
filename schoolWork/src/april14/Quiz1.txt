@@ -1,0 +1,10 @@
+What is the halving frequency(in blocks)? 210000
+What is the highest historic USD value? 1200
+What is the goal block creation time(min)? 10
+Who has the most bitcoins? satoshi
+Who has the largest wallet? FBI
+Currently, what is the reward for finding a block(BTC)? 25
+What algrorithm is used to hash the blockchain? SHA256
+Who controls bitcoin network? nobody
+What is the main meme inspired bitcoin spin-off? DogeCoin
+What is the ceiling for number of bitcoins in circulation(number)? 21000000
