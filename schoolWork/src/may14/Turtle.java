@@ -2342,7 +2342,6 @@ public class Turtle implements Runnable, ActionListener, MouseListener, MouseMot
      */
     public void keyPressed(KeyEvent e)
     {
-    	System.out.println("PRESSED A KEY");
         String keyText=KeyEvent.getKeyText(e.getKeyCode()).toLowerCase();
         synchronized (keyLock) 
         {
