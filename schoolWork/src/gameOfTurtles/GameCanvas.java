@@ -1,10 +1,11 @@
-package may14;
+package gameOfTurtles;
 
 public class GameCanvas {
 	Turtle player, hitPointsTurtle;
-
-	public GameCanvas() {
+	
+	public GameCanvas(){
 		player = new Turtle();
 		hitPointsTurtle = new Turtle();
 	}
+
 }
