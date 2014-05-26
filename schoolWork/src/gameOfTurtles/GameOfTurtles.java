@@ -53,6 +53,32 @@ public class GameOfTurtles {
 		System.out.println("Final Score: " + ticks);
 	}
 
+	public static boolean checkCollision(Turtle a, Turtle b, double radius) {
+		return radius > b.distance(a.getX(), a.getY());
+	}
+
+	public static void checkBoundryConditions() {
+		// method that makes sure turtle does not go out of bounds
+		double x = canvas.player.getX();
+		double y = canvas.player.getY();
+	
+		if (x > 490) {
+			canvas.player.setPosition(480, y);
+			x = 490;
+		}
+		if (x < -490) {
+			canvas.player.setPosition(-480, y);
+			x = -490;
+		}
+	
+		if (y > 430) {
+			canvas.player.setPosition(x, 430);
+		}
+		if (y < -490) {
+			canvas.player.setPosition(x, -480);
+		}
+	}
+
 	@SuppressWarnings("static-access")
 	public static void initializePlayer(Turtle t) {
 		t.up();
@@ -121,43 +147,123 @@ public class GameOfTurtles {
 		// positionReport();
 	}
 
+	public void positionReport() {
+		xPos = canvas.player.getX();
+		yPos = canvas.player.getY();
+		System.out.println("X: " + xPos);
+		System.out.println("Y: " + yPos);
+	}
+
+	public static void scatter() {
+		double playerPosX = canvas.player.getX(); // player x position
+		double playerPosY = canvas.player.getY(); // player y position
+		double x, y;
+		for (int i = 0; i < enemy.size(); i++) {
+			Turtle t = enemy.get(i);
+	
+			do {
+				x = Math.random() * 1000 - 500;
+			} while (Math.abs(playerPosX - x) < 100);
+			do {
+				y = Math.random() * 950 - 500;
+			} while (Math.abs(playerPosY - y) < 100);
+	
+			t.setPosition(x, y);
+		}
+	}
+
+	public static void shoot() {
+		double canvasX = Turtle.canvasX(canvas.player.mouseX());
+		double canvasY = Turtle.canvasY(canvas.player.mouseY());
+		double playerX = canvas.player.getX();
+		double playerY = canvas.player.getY();
+		double deltaX = canvasX - playerX;
+		double deltaY = canvasY - playerY;
+		double direction = Math.atan2(deltaY, deltaX);
+		direction *= 57.2957795;
+		
+		if (!bulletIdle.isEmpty()) {
+			Projectile t = bulletIdle.get(0);
+			
+			bulletIdle.remove(0);
+			t.set(playerX, playerY,direction, 10, 20);
+			bulletLive.add(t);
+		} else if (bulletLive.size() < maxBullets) {
+			Projectile t = new Projectile(playerX, playerY,direction, 10 , 5);
+			bulletLive.add(t);
+		}
+	
+	}
+	public static void spawn(int count, int maxEnemies) {
+		double playerPosX = canvas.player.getX(); // player x position
+		double playerPosY = canvas.player.getY(); // player y position
+		double x, y;
+		// count: Number of Enemies Spawned
+		// maxEnemies: Max number of enemies that can exist in a game.
+		for (int i = 0; i < count; i++) {
+			if (numberOfEnemies <= maxEnemies) {
+	
+				// block of code that generates new turtle
+				/*
+				 * double degree = (Math.random() * Math.PI * 2); /double radius
+				 * = (Math.random() * 50) + 50; / /double y = Math.sin(degree) *
+				 * radius; /double x = Math.cos(degree) * radius;
+				 */
+				// selects random spawning position within bounds, not near
+				// turtle
+				do {
+					x = Math.random() * 1000 - 500;
+				} while (Math.abs(playerPosX - x) < 100);
+				do {
+					y = Math.random() * 950 - 500;
+				} while (Math.abs(playerPosY - y) < 100);
+	
+				Turtle t = new Turtle(x, y);
+				t.speed(.0001);
+				t.up();
+				turnTo(t, canvas.player);
+	
+				enemy.add(t);
+				numberOfEnemies += 1;
+			} else if (deadEnemy.size() > 0) {
+				// block of code that recycles dead turtles
+				Turtle t = deadEnemy.get(0);
+				deadEnemy.remove(0);
+	
+				/*
+				 * double degree = (Math.random() * Math.PI * 2); /double radius
+				 * = (Math.random() * 50) + 50; / /double y = Math.sin(degree) *
+				 * radius; /double x = Math.cos(degree) * radius;
+				 */
+	
+				do {
+					x = Math.random() * 1000 - 500;
+				} while (Math.abs(playerPosX - x) < 100);
+				do {
+					y = Math.random() * 950 - 500;
+				} while (Math.abs(playerPosY - y) < 100);
+	
+				t.setPosition(x, y);
+				t.show();
+				turnTo(t, canvas.player);
+	
+				enemy.add(t);
+			}
+		}
+	}
+
 	@SuppressWarnings("static-access")
 	public static void teleport() {
 		// broken method to teleport
-
-		int canvasX = -2 * (250 - canvas.player.mouseX());
-		int canvasY = -2 * (canvas.player.mouseY() - 225) + 50;
+	
+		double canvasX = Turtle.canvasX(canvas.player.mouseX());
+		double canvasY = Turtle.canvasY(canvas.player.mouseY());
 		System.out.println("mouseX: " + canvasX);
 		System.out.println("mouseY: " + canvasY);
 		if (-500 < canvasX && canvasX < 500 && -500 < canvasY && canvasY < 450) {
 			canvas.player.setPosition(canvasX, canvasY);
 			System.out.println("Wooosh");
 		}
-	}
-
-	public static void shoot() {
-		int direction = (int) canvas.player.getDirection();
-		double x = canvas.player.getX();
-		double y = canvas.player.getY();
-
-		if (!bulletIdle.isEmpty()) {
-			Projectile t = bulletIdle.get(0);
-			
-			bulletIdle.remove(0);
-			t.set(x, y,direction, 17, 10);
-			bulletLive.add(t);
-		} else if (bulletLive.size() < maxBullets) {
-			Projectile t = new Projectile(x, y,direction, 10 , 5);
-			bulletLive.add(t);
-		}
-
-	}
-
-	public void positionReport() {
-		xPos = canvas.player.getX();
-		yPos = canvas.player.getY();
-		System.out.println("X: " + xPos);
-		System.out.println("Y: " + yPos);
 	}
 
 	public static void tick(int spawnDelay, double movementDistance)
@@ -172,27 +278,28 @@ public class GameOfTurtles {
 		}
 		for (int i = 0; i < bulletLive.size(); i++) {
 			Projectile t = bulletLive.get(i);
-			if (t.getTick() < 1) {
+			if (t.getTicks() < 1) {
 				bulletIdle.add(t);
 				bulletLive.remove(i).kill();
 			}
-			t.tick();
+			t.step();
 
 		}
+	
 		for (int i = 0; i < enemy.size(); i++) {
 			Turtle t = enemy.get(i);
-			turnTo(t, canvas.player);
-			t.forward(1);
-			if (i < bulletLive.size() && i > -1) {
-				if (checkCollision(bulletLive.get(i).getTurtle(), t, 150)) {
-					deadEnemy.add(enemy.get(i));
-					enemy.remove(i).hide();
-					bulletLive.get(i).kill();
-					bulletIdle.add(bulletLive.remove(i));
-					System.out.println("HIT");
+			for(int j = 0; j < bulletLive.size(); j++){
+				if (checkCollision(bulletLive.get(j).getTurtle(), t, 20)) {
+						deadEnemy.add(enemy.get(i));
+						enemy.remove(i).hide();
+						bulletLive.get(j).kill();
+						bulletIdle.add(bulletLive.remove(j));
+						System.out.println("HIT");
 				}
 			}
-			if (checkCollision(canvas.player, enemy.get(i), 30)) {
+			
+		
+			if (checkCollision(canvas.player, t, 30)) {
 				// System.out.println("removed");
 				deadEnemy.add(enemy.get(i));
 				enemy.remove(i).hide();
@@ -215,109 +322,7 @@ public class GameOfTurtles {
 
 	}
 
-	public static void spawn(int count, int maxEnemies) {
-		double playerPosX = canvas.player.getX(); // player x position
-		double playerPosY = canvas.player.getY(); // player y position
-		double x, y;
-		// count: Number of Enemies Spawned
-		// maxEnemies: Max number of enemies that can exist in a game.
-		for (int i = 0; i < count; i++) {
-			if (numberOfEnemies <= maxEnemies) {
-
-				// block of code that generates new turtle
-				/*
-				 * double degree = (Math.random() * Math.PI * 2); /double radius
-				 * = (Math.random() * 50) + 50; / /double y = Math.sin(degree) *
-				 * radius; /double x = Math.cos(degree) * radius;
-				 */
-				// selects random spawning position within bounds, not near
-				// turtle
-				do {
-					x = Math.random() * 1000 - 500;
-				} while (Math.abs(playerPosX - x) < 100);
-				do {
-					y = Math.random() * 950 - 500;
-				} while (Math.abs(playerPosY - y) < 100);
-
-				Turtle t = new Turtle(x, y);
-				t.speed(.0001);
-				t.up();
-				turnTo(t, canvas.player);
-
-				enemy.add(t);
-				numberOfEnemies += 1;
-			} else if (deadEnemy.size() > 0) {
-				// block of code that recycles dead turtles
-				Turtle t = deadEnemy.get(0);
-				deadEnemy.remove(0);
-
-				/*
-				 * double degree = (Math.random() * Math.PI * 2); /double radius
-				 * = (Math.random() * 50) + 50; / /double y = Math.sin(degree) *
-				 * radius; /double x = Math.cos(degree) * radius;
-				 */
-
-				do {
-					x = Math.random() * 1000 - 500;
-				} while (Math.abs(playerPosX - x) < 100);
-				do {
-					y = Math.random() * 950 - 500;
-				} while (Math.abs(playerPosY - y) < 100);
-
-				t.setPosition(x, y);
-				t.show();
-				turnTo(t, canvas.player);
-
-				enemy.add(t);
-			}
-		}
-	}
-
 	public static void turnTo(Turtle a, Turtle b) {
 		a.face(b.getX(), b.getY());
-	}
-
-	public static boolean checkCollision(Turtle a, Turtle b, int radius) {
-		return radius > b.distance(a.getX(), a.getY());
-	}
-
-	public static void checkBoundryConditions() {
-		// method that makes sure turtle does not go out of bounds
-		double x = canvas.player.getX();
-		double y = canvas.player.getY();
-
-		if (x > 490) {
-			canvas.player.setPosition(480, y);
-			x = 490;
-		}
-		if (x < -490) {
-			canvas.player.setPosition(-480, y);
-			x = -490;
-		}
-
-		if (y > 430) {
-			canvas.player.setPosition(x, 430);
-		}
-		if (y < -490) {
-			canvas.player.setPosition(x, -480);
-		}
-	}
-
-	public static void scatter() {
-		double playerPosX = canvas.player.getX(); // player x position
-		double playerPosY = canvas.player.getY(); // player y position
-		double x, y;
-		for (int i = 0; i < enemy.size(); i++) {
-			Turtle t = enemy.get(i);
-
-			do {
-				x = Math.random() * 1000 - 500;
-			} while (Math.abs(playerPosX - x) < 100);
-			do {
-				y = Math.random() * 950 - 500;
-			} while (Math.abs(playerPosY - y) < 100);
-
-			t.setPosition(x, y);
-		}
 	}
 }

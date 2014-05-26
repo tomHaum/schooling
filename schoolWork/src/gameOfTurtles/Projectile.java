@@ -28,7 +28,7 @@ public class Projectile {
 		base.hide();
 	}
 
-	int getTick() {
+	int getTicks() {
 		return tick;
 	}
 	
@@ -43,7 +43,7 @@ public class Projectile {
 		base.show();
 	}
 
-	void tick() {
+	void step() {
 		if (tick > 0) {
 			base.forward(speed * 1);
 			tick--;
